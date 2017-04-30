@@ -1,4 +1,5 @@
 import { Headers as HeadersPolyfill } from './polyfill/Headers';
+import origin from 'original';
 
 export function makeXhrTransport({ responseType, responseParserFactory }) {
   return function xhrTransport(url, options) {
@@ -22,7 +23,7 @@ export function makeXhrTransport({ responseType, responseParserFactory }) {
 
     xhr.open(method, url);
     xhr.responseType = responseType;
-    xhr.withCredentials = (options.credentials !== 'omit');
+    xhr.withCredentials = (options.credentials === 'include' || (options.credentials === 'same-origin' && origin.same(url, location.origin)));
     if (options.headers) {
       for (const pair of options.headers.entries()) {
         xhr.setRequestHeader(pair[0], pair[1]);
